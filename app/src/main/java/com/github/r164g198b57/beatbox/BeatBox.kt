@@ -6,17 +6,30 @@ import android.util.Log
 private const val TAG = "BeatBox1947"
 private const val SOUNDS_FOLDER = "sample_sounds"
 
-class BeatBox (private val assets: AssetManager){
+class BeatBox(private val assets: AssetManager) {
 
-    fun loadSounds(): List<String> {
-        try {
-            val soundNames = assets.list(SOUNDS_FOLDER)!!
-            Log.d(TAG, "Раптам знойдзена ${soundNames.size} гука")
-            return soundNames.asList()
-        } catch (e: Exception){
-            Log.d(TAG, "Спіс актываў адсутнічае", e)
-            return emptyList()
-        }
+    val sounds: List<Sound>
+
+    init {
+        sounds = loadSounds()
     }
 
+    private fun loadSounds(): List<Sound> {
+
+        val soundNames: Array<String>
+
+        try {
+            soundNames = assets.list(SOUNDS_FOLDER)!!
+        } catch (e: Exception) {
+            Log.e(TAG, "Спіс актываў адсутнічае", e)
+            return emptyList()
+        }
+        val sounds = mutableListOf<Sound>()
+        soundNames.forEach { filename ->
+            val assetPath = "$SOUNDS_FOLDER/$filename"
+            val sound = Sound(assetPath)
+            sounds.add(sound)
+        }
+        return sounds
+    }
 }
